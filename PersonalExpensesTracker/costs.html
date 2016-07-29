@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html" charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+    <meta name="mobile-web-app-capable" content="yes">
+    <link rel="stylesheet" type="text/css" href="costs.css" />
+    <link rel="shortcut icon" sizes="196x196" href="question.png">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js" type="application/javascript"></script>
+    <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jquerymobile/1.4.5/jquery.mobile.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquerymobile/1.4.5/jquery.mobile.min.js" type="application/javascript"></script>
+    <link href="https://fonts.googleapis.com/css?family=Roboto+Condensed" rel="stylesheet">
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script src="costs.js" rel="script" type="application/javascript"></script>
+    <title>Personal Expenses Tracker</title>
+</head>
+<body>
+    <div data-role="page" id="main" class="center">
+        <div data-role="header" data-theme="b">
+            <a href="#chart" data-icon="shop" class="ui-btn-left">Chart</a>
+            <h1>Personal Expenses Tracker</h1>
+        </div>
+        <div data-role="content" class="ui-content">
+            <div class="ui-field-contain">
+              <label for="txtSum">Sum:</label>
+              <input type="number" name="txtSum" id="txtSum" value=""   data-inline="true" width="200"/>
+            </div>
+            <br/>
+            <button id="btnFood" class="ui-btn ui-btn-inline ui-btn-corner-all"
+                    onclick="ExpensesTracker.costs.addCost($('#txtSum').val(), ExpensesTracker.Category.Food)">Food</button>
+            <button id="btnTransportation" class="ui-btn ui-btn-inline ui-btn-corner-all"
+                    onclick="ExpensesTrackercosts.addCost($('#txtSum').val(), ExpensesTrackerCategory.Transportation)">
+                Transportation</button>
+            <button id="btnClothes" class="ui-btn ui-btn-inline ui-btn-corner-all"
+                    onclick="ExpensesTrackercosts.addCost($('#txtSum').val(), ExpensesTrackerCategory.Clothes)">Clothes</button>
+            <button id="btnHealth" class="ui-btn ui-btn-inline ui-btn-corner-all"
+                    onclick="ExpensesTrackercosts.addCost($('#txtSum').val(), ExpensesTrackerCategory.Health)">Health</button>
+            <button id="btnEducation" class="ui-btn ui-btn-inline ui-btn-corner-all"
+                    onclick="ExpensesTrackercosts.addCost($('#txtSum').val(), ExpensesTrackerCategory.Education)">Education</button>
+            <button id="btnHousing" class="ui-btn ui-btn-inline ui-btn-corner-all"
+                    onclick="ExpensesTrackercosts.addCost($('#txtSum').val(), ExpensesTrackerCategory.Housing)">Housing</button>
+            <button id="btnOther" class="ui-btn ui-btn-inline ui-btn-corner-all"
+                    onclick="ExpensesTrackercosts.addCost($('#txtSum').val(), ExpensesTrackerCategory.Other)">Other</button>
+        </div>
+    </div>
+
+    <div data-role="page" id="chart" class="center">
+        <div data-role="header" data-theme="b">
+            <a href="#main" data-icon="home" data-iconpos="notext" class="ui-btn-left">Home</a>
+            <h1>Personal Expenses Tracker - Chart</h1>
+        </div>
+        <div data-role="content" class="ui-content">
+            <div id="piechart" class="piechart"></div>
+        </div>
+    </div>
+</body>
+</html>
