@@ -1,0 +1,96 @@
+.chart {
+    margin-right: 5px;
+    width: 610px;
+    height: 420px;
+}
+
+.chartPageFlex {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.center {
+    text-align: center;
+}
+
+.displayDateButton {
+    width: 100px !important;
+    align-self: center;
+}
+
+.fieldsetBorder {
+    border: 2px groove;
+    border-radius: 5px
+}
+
+.fixedButtonSize {
+    width: 150px !important;
+}
+
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+input[type="number"] {
+    -moz-appearance: textfield;
+}
+
+.lblFont {
+    font-size: 0.8em;
+}
+
+.rightPanelFlex {
+    display: flex;
+    flex-direction: column;
+}
+
+.ui-btn {
+    //width: 150px !important;
+    //font-size: 0.8em;
+}
+
+.ui-header .ui-title {
+    margin-right: 10%;
+    margin-left: 10%;
+}
+
+.ui-icon-bar-chart:after {
+    background-image: url("bar-chart-o.png");
+}
+
+/* Portrait */
+@media screen
+and (device-width: 320px)
+and (device-height: 568px)
+and (-webkit-device-pixel-ratio: 3)
+and (orientation: portrait) {
+    .chart {
+        width: 190px;
+        height: 440px;
+    }
+}
+
+/* Landscape */
+@media screen
+and (max-device-width: 640px)
+and (max-device-height: 360px)
+and (-webkit-device-pixel-ratio: 3)
+and (orientation: landscape) {
+    .chart {
+        width: 325px;
+        height: 220px;
+    }}
+
+/*@media all and (max-width: 50em) {
+    .breakpoint .ui-block-a,
+    .breakpoint .ui-block-b,
+    .breakpoint .ui-block-c,
+    .breakpoint .ui-block-d,
+    .breakpoint .ui-block-e {
+        width: 100%;
+        float:none;
+    }
+}*/
+
+

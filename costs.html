@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html" charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+    <meta name="mobile-web-app-capable" content="yes">
+    <link rel="shortcut icon" sizes="196x196" href="costs.png">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js" type="application/javascript"></script>
+    <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jquerymobile/1.4.5/jquery.mobile.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquerymobile/1.4.5/jquery.mobile.min.js" type="application/javascript"></script>
+    <link href="https://fonts.googleapis.com/css?family=Roboto+Condensed" rel="stylesheet">
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript" src="date.js"></script>
+    <script src="costs.js" rel="script" type="application/javascript"></script>
+    <link rel="stylesheet" type="text/css" href="costs.css" />
+
+    <link rel="stylesheet"  href="http://code.jquery.com/mobile/git/jquery.mobile-git.css" />
+    <link rel="stylesheet" href="https://rawgithub.com/arschmitz/jqSuery-mobile-datepicker-wrapper/master/jquery.mobile.datepicker.css" />
+    <script src="https://rawgithub.com/jquery/jquery-ui/1-10-stable/ui/jquery.ui.datepicker.js"></script>
+    <script src="http://code.jquery.com/mobile/git/jquery.mobile-git.js"></script>
+
+    <link rel="stylesheet" href="jquery.mobile.datepicker.css" />
+    <link rel="stylesheet" href="jquery.mobile.datepicker.theme.css" />
+    <script src="datepicker.js"></script>
+    <script src="jquery.mobile.datepicker.js"></script>
+
+    <title>Personal Expenses Tracker</title>
+</head>
+<body>
+    <div data-role="page" data-dom-cache="true" id="main">
+        <div data-role="header" data-theme="b">
+            <a href="#chart_container" data-icon="bar-chart" class="ui-btn-left">Chart</a>
+            <h1>Personal Expenses Tracker</h1>
+        </div>
+        <div data-role="content" class="ui-content center">
+            <div class="ui-field-contain">
+              <label for="txtSum">Sum:</label>
+              <input type="number" name="txtSum" id="txtSum" value="" data-inline="true"
+                     data-clear-btn="true" width="200" onkeyup="$('#added').html('')"/>
+                <div id="added" class="ui-content"></div>
+            </div>
+            <br/>
+            <div class="ui-grid-c ui-responsive">
+                <div class="ui-block-a">
+                  <button id="btnFood" class="ui-btn ui-btn-inline ui-btn-corner-all ui-shadow fixedButtonSize"
+                           onclick="ExpensesTracker.costs.addCost($('#txtSum').val(), ExpensesTracker.Category.Food)">Food</button>
+                </div>
+                <div class="ui-block-b">
+                  <button id="btnTransportation" class="ui-btn ui-btn-inline ui-btn-corner-all ui-shadow fixedButtonSize"
+                          onclick="ExpensesTracker.costs.addCost($('#txtSum').val(), ExpensesTracker.Category.Transportation)">
+                      Transportation</button>
+                </div>
+                <div class="ui-block-c">
+                  <button id="btnClothes" class="ui-btn ui-btn-inline ui-btn-corner-all ui-shadow fixedButtonSize"
+                          onclick="ExpensesTracker.costs.addCost($('#txtSum').val(), ExpensesTracker.Category.Clothes)">Clothes</button>
+                </div>
+                <div class="ui-block-d">
+                  <button id="btnHealth" class="ui-btn ui-btn-inline ui-btn-corner-all ui-shadow fixedButtonSize"
+                          onclick="ExpensesTracker.costs.addCost($('#txtSum').val(), ExpensesTracker.Category.Health)">Health</button>
+                </div>
+                <div class="ui-block-a">
+                  <button id="btnEducation" class="ui-btn ui-btn-inline ui-btn-corner-all ui-shadow fixedButtonSize"
+                          onclick="ExpensesTracker.costs.addCost($('#txtSum').val(), ExpensesTracker.Category.Education)">Education</button>
+                </div>
+                <div class="ui-block-b">
+                  <button id="btnHousing" class="ui-btn ui-btn-inline ui-btn-corner-all ui-shadow fixedButtonSize"
+                          onclick="ExpensesTracker.costs.addCost($('#txtSum').val(), ExpensesTracker.Category.Housing)">Housing</button>
+                </div>
+                <div class="ui-block-c">
+                 <button id="btnOther" class="ui-btn ui-btn-inline ui-btn-corner-all ui-shadow fixedButtonSize"
+                          onclick="ExpensesTracker.costs.addCost($('#txtSum').val(), ExpensesTracker.Category.Other)">Other</button>
+                </div>
+                <div class="ui-block-d">
+                <button id="btnReset" class="ui-btn ui-btn-inline ui-btn-b ui-btn-corner-all ui-btn-icon-right ui-icon-delete fixedButtonSize"
+                        onclick="ExpensesTracker.costs.resetCosts()">Reset Costs</button>
+                </div>
+            </div>
+        </div>
+
+        <div data-position-to="window" data-role="popup" id="popupDialog" data-overlay-theme="b" data-theme="b"
+             data-dismissible="false" style="min-width:250px; min-height: 100px">
+            <div data-role="header" data-theme="a">
+                <h1>Reset Costs?</h1>
+            </div>
+            <div data-role="main" class="ui-content">
+                <h3 class="ui-title">Are you sure you want to reset all costs?</h3>
+                <h3 class="ui-title">This action cannot be undone.</h3>  
+                <a href="#" id="btnCancel" class="ui-btn ui-corner-all ui-shadow ui-btn-inline ui-btn-b" data-rel="back">Cancel</a>
+                        <a href="#" id="btnDelete" class="ui-btn ui-corner-all ui-shadow ui-btn-inline ui-btn-b"
+                           data-rel="back" data-transition="flow">Reset</a>
+            </div>
+        </div>
+
+        <!--<div data-role="popup" id="popupDialog" data-overlay-theme="b" data-theme="b" data-dismissible="false"
+             style="max-width:400px;">
+                <div data-role="header" data-theme="a">
+                    <h1>Reset Costs?</h1>
+                </div>
+                <div role="main" class="ui-content">
+                    <h3 class="ui-title">Are you sure you want to reset all costs?</h3>
+                    <p>This action cannot be undone.</p>
+                    <a href="#" id="btnCancel" class="ui-btn ui-corner-all ui-shadow ui-btn-inline ui-btn-b" data-rel="back">Cancel</a>
+                    <a href="#" id="btnDelete" class="ui-btn ui-corner-all ui-shadow ui-btn-inline ui-btn-b"
+                       data-rel="back" data-transition="flow">Reset</a>
+                </div>
+        </div>-->
+    </div>
+
+    <div data-role="page" data-dom-cache="true" id="chart_container" class="center1">
+        <div data-role="header" data-theme="b">
+            <a href="#main" data-icon="home" class="ui-btn-left">Home</a>
+            <h1>Personal Expenses Tracker</h1>
+        </div>
+        <div data-role="content" class="ui-content">
+            <div class="chartPageFlex">
+                <div id="chart" class="chart" data-mini="true"></div>
+                <div class="rightPanelFlex">
+                    <fieldset style="border: 2px groove; border-radius: 5px">
+                        <legend class="lblFont">Time</legend>
+                        <div class="ui-field-contain">
+                            <select name="slctExpenses" id="slctExpenses" data-inline="true" data-mini="true">
+                                <option id="thisMonth" value="thisMonth">Current Month</option>
+                                <option id="lastMonth" value="lastMonth">Last Month</option>
+                                <option id="thisYear" value="thisYear">Current Year</option>
+                                <option id="lastYear" value="lastYear">Last Year</option>
+                            </select>
+                        </div>
+
+                        <fieldset style="border: 2px groove; border-radius: 5px; margin: 5px;">
+                            <div id="dateBetweenContainer" class="ui-content">
+                                <span id="from" for="dateFrom" data-mini="true" class="lblFont">From</span>
+                                <input type="text" id="dateFrom" data-role="date" data-mini="true"/>
+                                <span id="to" for="dateTo" data-mini="true" class="lblFont">To</span>
+                                <input type="text" id="dateTo" data-role="date" data-mini="true"/>
+                                <button id="btnDisplay" class="ui-btn ui-btn-inline ui-btn-corner-all ui-shadow displayDateButton"
+                                     onclick="ExpensesTracker.costs.getCostsBetweenDates(Date.parse($('#dateFrom').val()),
+                                                Date.parse($('#dateTo').val()))">Display</button>
+                            </div>
+                        </fieldset>
+                    </fieldset>
+                    <div class="ui-field-contain">
+                        <span for="slctCharts" class="lblFont">Charts:</span>
+                        <select name="slctCharts" id="slctCharts" data-inline="false" data-mini="true">
+                            <option id="pieChart" value="pieChart">Pie</option>
+                            <option id="columnChart" value="columnChart">Column</option>
+                            <option id="barChart" value="barChart">Bar</option>
+                            <option id="comboChart" value="comboChart">Combo</option>
+                            <option id="histogram" value="histogram">Histogram</option>
+                            <option id="lineChart" value="lineChart">Line</option>
+                            <option id="areaChart" value="areaChart">Area</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
