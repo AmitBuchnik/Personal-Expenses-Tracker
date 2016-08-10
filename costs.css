@@ -3,7 +3,6 @@
     width: 610px;
     height: 420px;
 }
-
 .chartPageFlex {
     display: flex;
     flex-wrap: wrap;
@@ -18,10 +17,19 @@
     align-self: center;
 }
 
+/*fieldset {
+    border: 2px groove;
+    -webkit-border-radius: 8px;
+    -moz-border-radius: 8px;
+    border-radius: 5px
+}
 .fieldsetBorder {
     border: 2px groove;
     border-radius: 5px
 }
+.fieldsetShadow {
+    box-shadow: 2px 2px 5px rgba(0,0,0,0.4);
+}*/
 
 .fixedButtonSize {
     width: 150px !important;
@@ -38,6 +46,15 @@ input[type="number"] {
 
 .lblFont {
     font-size: 0.8em;
+}
+
+.legendBorder {
+    //background: #FF9;
+    border: solid 1px black;
+    -webkit-border-radius: 8px;
+    -moz-border-radius: 8px;
+    border-radius: 8px;
+    padding: 4px;
 }
 
 .rightPanelFlex {
