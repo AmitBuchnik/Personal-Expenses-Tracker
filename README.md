@@ -1,2 +1,2 @@
 # Personal-Expenses-Tracker
-tracking your expensesr
+tracking your expenses
