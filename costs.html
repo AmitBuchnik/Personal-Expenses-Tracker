@@ -15,7 +15,7 @@
     <link rel="stylesheet" type="text/css" href="costs.css" />
 
     <link rel="stylesheet"  href="http://code.jquery.com/mobile/git/jquery.mobile-git.css" />
-    <link rel="stylesheet" href="https://rawgithub.com/arschmitz/jqSuery-mobile-datepicker-wrapper/master/jquery.mobile.datepicker.css" />
+    <!--<link rel="stylesheet" href="https://rawgithub.com/arschmitz/jqSuery-mobile-datepicker-wrapper/master/jquery.mobile.datepicker.css" />-->
     <script src="https://rawgithub.com/jquery/jquery-ui/1-10-stable/ui/jquery.ui.datepicker.js"></script>
     <script src="http://code.jquery.com/mobile/git/jquery.mobile-git.js"></script>
 
@@ -36,7 +36,8 @@
             <div class="ui-field-contain">
               <label for="txtSum">Sum:</label>
               <input type="number" name="txtSum" id="txtSum" value="" data-inline="true"
-                     data-clear-btn="true" width="200" onkeyup="$('#added').html('')"/>
+                     data-clear-btn="true" width="200" onkeyup="$('#added').html('')"
+                     placeholder="Enter sum here"/>
                 <div id="added" class="ui-content"></div>
             </div>
             <br/>
@@ -132,8 +133,8 @@
                                 <input type="text" id="dateFrom" data-role="date" data-mini="true"/>
                                 <span id="to" for="dateTo" data-mini="true" class="lblFont">To</span>
                                 <input type="text" id="dateTo" data-role="date" data-mini="true"/>
-                                <button id="btnDisplay" class="ui-btn ui-btn-inline ui-btn-corner-all ui-shadow displayDateButton"
-                                     onclick="ExpensesTracker.costs.getCostsBetweenDates(Date.parse($('#dateFrom').val()),
+                                <button id="btnDisplay" class="ui-btn ui-mini ui-btn-inline ui-btn-corner-all ui-shadow displayDateButton"
+                                        onclick="ExpensesTracker.costs.getCostsBetweenDates(Date.parse($('#dateFrom').val()),
                                                 Date.parse($('#dateTo').val()))">Display</button>
                             </div>
                         </fieldset>
