@@ -9,63 +9,42 @@
 /// <reference path="sugarpak.d.ts" />
 /// <reference path="es6-collections.d.ts" />
 
+/*---------------------------------- Initialization ----------------------------------*/
 $(document).ready (function () {
     google.charts.load('current', {'packages': ['corechart']});
 
-    $("#slctExpenses").change(function() {
-        let optionSelected = $(this).find('option:selected');
-        ExpensesTracker.costs.optValueSelected = optionSelected.val();
-        ExpensesTracker.costs.getCosts();
-
-        /*switch (ExpensesTracker.costs.optValueSelected) {
-            case 'thisMonth':
-                ExpensesTracker.costs.getCostsThisMonth();
-                break;
-            case 'lastMonth':
-                ExpensesTracker.costs.getCostsLastMonth();
-                break;
-            case 'thisYear':
-                ExpensesTracker.costs.getCostsThisYear();
-                break;
-            case 'lastYear':
-                ExpensesTracker.costs.getCostsLastYear()
-                break;
-            case 'betweenDates':
-                break;
-        }*/
+    // select handler for expenses period
+    $("#slctExpensesPeriod").change(function() {
+        let selectedTimePeriod = $(this).find('option:selected');
+        ExpensesTracker.costs.getCosts(selectedTimePeriod.val());
     });
 
+    // select handler for charts type
     $("#slctCharts").change(function() {
-        let optionSelected = $(this).find('option:selected');
-        let optValueSelected = optionSelected.val();
+        let selectedChart = $(this).find('option:selected');
+        Charts.chart = Charts.ChartFactory.createChart(selectedChart.val());
 
-        Charts.chart = Charts.ChartFactory.createChart(optValueSelected);
-        ExpensesTracker.costs.getCosts();
-
-        /*switch (optValueSelected) {
-            case 'pieChart':
-                Charts.chart = Charts.ChartFactory.createChart('piechart');
-                break;
-            case 'columnChart':
-                break;
-            case 'barChart':
-                break;
-            case 'comboChart':
-                break;
-            case 'histogram':
-                break;
-            case 'lineChart':
-                break;
-            case 'areaChart':
-                break;
-        }*/
+        let selectedTimePeriod = $('#slctExpensesPeriod').find('option:selected');
+        ExpensesTracker.costs.getCosts(selectedTimePeriod.val());
     });
 
-    $('.ui-input-clear').on('click', function () {
-        $('#added').html('');
-    });
+    $(".ui-loader").hide();
 });
 
+/*---------------------------------- Page Events ----------------------------------*/
+$(document).on("pagecontainerchange", function(event, ui) {
+    if(ui.toPage[0].id == 'chart_container') {
+        if(Charts.chart == undefined) {
+            // default chart
+            Charts.chart = Charts.ChartFactory.createChart($('#slctCharts').find('option:selected').val());
+            // default period
+            let timePeriod = $("#slctExpensesPeriod").find('option:selected');
+            ExpensesTracker.costs.getCosts(timePeriod.val());
+        }
+    }
+});
+
+/*---------------------------------- IndexedDB ----------------------------------*/
 window.indexedDB = window.indexedDB ||
     //window.mozIndexedDB ||
     //window.webkitIndexedDB ||
@@ -96,7 +75,7 @@ indxDB.openDB = function () {
         //let objectStore = db.dbDatabase.createObjectStore('costs', {keyPath: 'date'});
 
         //db.index = objectStore.index('date');
-        objectStore.createIndex('index', 'date', {unique: false});
+        objectStore.createIndex('index', 'date', {unique: false}); // search index by date
 
         console.log("creating db: "+ indxDB.dbDatabase);
     };
@@ -124,7 +103,7 @@ indxDB.addItem = function (cost: number, category: ExpensesTracker.Category, dat
 
     // create an object store on the transaction
     var objectStore = transaction.objectStore('costs');
-    console.log(objectStore.keyPath);
+    console.log('keyPath: ' + objectStore.keyPath);
 
     // add our newItem object to the object store
     var objectStoreRequest = objectStore.add(newItem[0]);
@@ -184,8 +163,7 @@ indxDB.getCostsBetweenDates = function (startDate: Date, endDate: Date, options)
     let transaction = indxDB.dbDatabase.transaction('costs','readonly');
     let store = transaction.objectStore('costs');
     let index = store.index('index');
-    //let results : { [key: number]: number; } = {};
-    let results = new Map<number, number>();
+    let results = new Map<number, number>(); // <Category, Cost>
 
     if(endDate >= startDate) {
         var boundKeyRange = IDBKeyRange.bound(startDate, endDate);
@@ -193,7 +171,7 @@ indxDB.getCostsBetweenDates = function (startDate: Date, endDate: Date, options)
         index.openCursor(boundKeyRange).onsuccess = function (event) {
             var cursor = event.target.result;
             if (cursor) {
-                console.log('getCostsThisMonth(): cost = ' + cursor.value.cost + ' category = '
+                console.log(options.title + ': cost = ' + cursor.value.cost + ' category = '
                     + cursor.value.category + ' date = ' + cursor.value.date);
 
                 let value = results.get(cursor.value.category);
@@ -209,6 +187,7 @@ indxDB.getCostsBetweenDates = function (startDate: Date, endDate: Date, options)
         };
     }
 
+    // all data wes recieved
     store.transaction.oncomplete = function () {
         Charts.chart.deleteChart();
 
@@ -280,6 +259,7 @@ indxDB.resetCosts = function() {
     };
 }
 
+/*---------------------------------- Classes ----------------------------------*/
 namespace ExpensesTracker
 {
     export enum Category {
@@ -306,11 +286,9 @@ namespace ExpensesTracker
     }*/
 
     interface ICost {
-        optValueSelected: string;
-
         addCost(cost: number, category: Category): void;
 
-        getCosts(): void;
+        getCosts(timePeriod: string): void;
 
         getCostsThisMonth(): void;
 
@@ -330,8 +308,6 @@ namespace ExpensesTracker
     }
 
     class indexedDBCosts implements ICost {
-        optValueSelected: string = 'thisMonth';
-
         constructor() {
             indxDB.openDB();
         }
@@ -352,11 +328,15 @@ namespace ExpensesTracker
                 db.addItem(cost, Category.Education, Date.today().add(-1).days());        //*/
 
                 $('#added').html('Sum added to ' + Category[category]);
+                $('#added').popup('open');
+                setTimeout(function () {
+                    $('#added').popup('close');
+                }, 1500);
             }
         }
 
-        getCosts(): void {
-            switch (ExpensesTracker.costs.optValueSelected) {
+        getCosts(timePeriod: string): void {
+            switch (timePeriod) {
                 case 'thisMonth':
                     ExpensesTracker.costs.getCostsThisMonth();
                     break;
@@ -415,9 +395,10 @@ namespace ExpensesTracker
 
         getCostsBetweenDates(startDate: Date, endDate: Date) {
             try {
-                this.optValueSelected = 'betweenDates';
-                let options = { title: 'Expenses between ' + startDate.toLocaleDateString() + ' and ' +  endDate.toLocaleDateString()};
-                indxDB.getCostsBetweenDates(startDate, endDate, options);
+                if(startDate != null && endDate != null) {
+                    let options = {title: 'Expenses between ' + startDate.toLocaleDateString() + ' and ' + endDate.toLocaleDateString()};
+                    indxDB.getCostsBetweenDates(startDate, endDate, options);
+                }
             }
             catch (e) {
                 alert(e.name + ' ' + e.message);
@@ -486,7 +467,6 @@ namespace Charts {
     class ColumnChart extends Chart {
         constructor() {
             super();
-            //google.charts.load('current', {'packages': ['corechart']});
         }
 
         drawChart(options, results: Map<number, number>): void {
@@ -511,12 +491,12 @@ namespace Charts {
 
                 let data = google.visualization.arrayToDataTable(arr);
                 var view = new google.visualization.DataView(data);
-                view.setColumns([0, 1,
-                    { calc: "stringify",
-                        sourceColumn: 1,
-                        type: "string",
-                        role: "annotation" },
-                    2]);
+                view.setColumns([0, 1, { calc: "stringify",
+                                         sourceColumn: 1,
+                                         type: "string",
+                                         role: "annotation"
+                                       },
+                                 2]);
 
                 var opt = {
                     title: options.title,
@@ -535,7 +515,6 @@ namespace Charts {
     class PieChart extends Chart {
         constructor() {
             super();
-            //google.charts.load('current', {'packages': ['corechart']});
         }
 
         drawChart(options: {}, results: Map<number, number>): void {
@@ -601,13 +580,5 @@ namespace Charts {
         chart.draw(data, options);
     }*/
 
-    //export var chart: IChart = ChartFactory.createChart('piechart');
     export var chart: Chart;
 }
-
-$(document).on( "pagecontainerchange", function( event, ui ) {
-    if(ui.toPage[0].id == 'chart_container') {
-        Charts.chart = Charts.ChartFactory.createChart($('#slctCharts').find('option:selected').val());
-        ExpensesTracker.costs.getCosts();
-    }
-});
